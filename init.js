@@ -1,14 +1,5 @@
-import { createClient } from 'redis';
+const { ER_USERNAME, ER_PASSWORD, ER_SITE } = process.env;
 
-import { fetchAuth } from './services/auth.js';
-
-const { ER_USERNAME } = process.env;
-
-const redisClient = createClient();
-await redisClient.connect();
-
-const token = await fetchAuth();
-
-await redisClient.set(`token:${ER_USERNAME}`, JSON.stringify(token));
+console.log({ ER_USERNAME, ER_PASSWORD, ER_SITE });
 
 process.exit(0);
