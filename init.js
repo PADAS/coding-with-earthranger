@@ -11,7 +11,7 @@ export default async () => {
 
   const filter = { text: 'polygon' };
 
-  const response = await fetchEvents(token.access_token, { page_size: 250, filter });
+  const response = await fetchEvents(token.access_token, { page_size: 25, filter });
   const results = response?.data?.results;
 
   if (results) {
@@ -19,4 +19,4 @@ export default async () => {
   }
 
   return redisClient;
-}
+};

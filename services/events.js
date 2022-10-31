@@ -4,9 +4,7 @@ const { ER_SITE } = process.env;
 
 export const fetchEvents = async (access_token = null, params = {}) => {
   if (!access_token) {
-    return await Promise.reject(
-      new Error('a token is necessary to make this request')
-    )
+    throw new Error('a token is necessary to make this request');
   }
   
   const url = `${ER_SITE}/api/v1.0/activity/events`;
