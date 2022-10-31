@@ -5,10 +5,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cool title for a silly little thing</title>
+  <style>
+    #event-table {
+      border-collapse: collapse;
+      width: 98%;
+    }
+
+    #event-table th, #event-table td {
+      border: 1px solid gray;
+      padding: 0.25rem;
+      text-align: center;
+      width: 20%;
+    }
+  </style>
 </head>
 <body>
   <h1>Welcome to your extremely hastily made web application</h1>
-  <table>
+  <table id="event-table">
     <thead>
       <tr>
         <th>Serial Number</th>
