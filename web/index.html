@@ -17,10 +17,17 @@
       text-align: center;
       width: 20%;
     }
+
+    #filter-text {
+      min-width: 16rem;
+    }
   </style>
 </head>
 <body>
-  <h1>Welcome to your extremely hastily made web application</h1>
+  <h1>Welcome to your hastily made application</h1>
+  <br />
+  <input type="text" id="filter-text" placeholder="Type your text filter value here" />
+  <br /><br />
   <table id="event-table">
     <thead>
       <tr>
@@ -36,13 +43,38 @@
     </tbody>
   </table>
   <script>
-    (async () => {
-      const events = await fetch('/events')
+    const objectToParamString = (obj = {}) =>
+      Object.entries(obj)
+        .reduce((params, [key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach((v) => {
+              params.append(key, v);
+            });
+          } else if (typeof value === 'object') {
+            params.append(key, JSON.stringify(value));
+          } else {
+            params.append(key, value);
+          }
+          return params;
+        }, new URLSearchParams())
+        .toString();
+    
+    const fetchAndUpdate = async (filterString = '') => {
+      const queryObject = {
+        filter: {
+          text: filterString,
+        },
+      };
+
+      const queryString = objectToParamString(queryObject);
+
+      const events = await fetch(`/events?${queryString}`)
         .then((response) =>
           response.json()
         );
 
         const tableBody = document.getElementById('table-body');
+        tableBody.innerHTML = null;
 
         events.forEach((event) => {
           const newRow = document.createElement('tr');
@@ -61,7 +93,19 @@
 
           tableBody.append(newRow);
         });
-    })();
+    };
+
+    let queryTimeout;
+
+    document.getElementById('filter-text').addEventListener('input', ({ target: { value } }) => {
+      clearTimeout(queryTimeout);
+
+      queryTimeout = setTimeout(() => {
+        fetchAndUpdate(value);
+      }, 200);
+    });
+
+    fetchAndUpdate();
   </script>
 </body>
 </html>

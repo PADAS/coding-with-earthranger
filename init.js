@@ -1,7 +1,8 @@
 import { createClient } from 'redis';
 
 import { fetchAuth } from './services/auth.js';
-import { fetchEvents } from './services/events.js';
+
+const { ER_USERNAME } = process.env;
 
 export default async () => {
   const redisClient = createClient();
@@ -9,14 +10,7 @@ export default async () => {
   
   const token = await fetchAuth();
 
-  const filter = { text: 'polygon' };
-
-  const response = await fetchEvents(token.access_token, { page_size: 25, filter });
-  const results = response?.data?.results;
-
-  if (results) {
-    await redisClient.set('events', JSON.stringify(results));
-  }
+  await redisClient.set(`token:${ER_USERNAME}`, JSON.stringify(token));
 
   return redisClient;
 };

@@ -13,5 +13,7 @@ export const fetchAuth = async () => {
   return await fetch(url, {
     method: 'POST',
     body: formData,
-  }).then((response) => response.json());
+  }).then((response) =>
+    response.json()
+  );
 };
