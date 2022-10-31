@@ -17,17 +17,11 @@
       text-align: center;
       width: 20%;
     }
-
-    #filter-text {
-      min-width: 16rem;
-    }
   </style>
 </head>
 <body>
   <h1>Welcome to your hastily made application</h1>
   <br />
-  <input type="text" id="filter-text" placeholder="Type your text filter value here" />
-  <br /><br />
   <table id="event-table">
     <thead>
       <tr>
@@ -38,74 +32,38 @@
         <th>Area</th>
       </tr>
     </thead>
-    <tbody id='table-body'>
+    <tbody id="table-body">
 
     </tbody>
   </table>
   <script>
-    const objectToParamString = (obj = {}) =>
-      Object.entries(obj)
-        .reduce((params, [key, value]) => {
-          if (Array.isArray(value)) {
-            value.forEach((v) => {
-              params.append(key, v);
-            });
-          } else if (typeof value === 'object') {
-            params.append(key, JSON.stringify(value));
-          } else {
-            params.append(key, value);
-          }
-          return params;
-        }, new URLSearchParams())
-        .toString();
-    
-    const fetchAndUpdate = async (filterString = '') => {
-      const queryObject = {
-        filter: {
-          text: filterString,
-        },
-      };
-
-      const queryString = objectToParamString(queryObject);
-
-      const events = await fetch(`/events?${queryString}`)
-        .then((response) =>
-          response.json()
-        );
-
-        const tableBody = document.getElementById('table-body');
-        tableBody.innerHTML = null;
-
-        events.forEach((event) => {
-          const newRow = document.createElement('tr');
-
-          const eventGeometry = event?.geometry?.features?.[0];
-          
-          const markup = `
-              <td>${event.serial_number}</td>
-              <td>${event.priority}</td>
-              <td>${event.event_type}</td>
-              <td>${eventGeometry?.properties?.perimeter}m</td>
-              <td>${eventGeometry?.properties?.area}m²</td>
-          `;
-
-          newRow.innerHTML = markup;
-
-          tableBody.append(newRow);
-        });
-    };
-
-    let queryTimeout;
-
-    document.getElementById('filter-text').addEventListener('input', ({ target: { value } }) => {
-      clearTimeout(queryTimeout);
-
-      queryTimeout = setTimeout(() => {
-        fetchAndUpdate(value);
-      }, 200);
-    });
-
-    fetchAndUpdate();
+    (async () => {
+      const events = await fetch('/events')
+      .then((response) =>
+      response.json()
+      );
+      
+      const tableBody = document.getElementById('table-body');
+      tableBody.innerHTML = null;
+      
+      events.forEach((event) => {
+        const newRow = document.createElement('tr');
+        
+        const eventGeometry = event?.geometry?.features?.[0];
+        
+        const markup = `
+        <td>${event.serial_number}</td>
+        <td>${event.priority}</td>
+        <td>${event.event_type}</td>
+        <td>${eventGeometry?.properties?.perimeter}m</td>
+        <td>${eventGeometry?.properties?.area}m²</td>
+        `;
+        
+        newRow.innerHTML = markup;
+        
+        tableBody.append(newRow);
+      });
+    })();
   </script>
 </body>
 </html>
