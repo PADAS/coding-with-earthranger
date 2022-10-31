@@ -1,4 +1,6 @@
 import express from 'express';
+
+import url from 'url';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -25,7 +27,9 @@ server.get('/', (req, res) => {
 });
 
 server.get('/events', async (req, res) => {
-  const events = await fetchEvents(token.access_token, req.query);
+  const queryString = url.parse(req.url).query;
+
+  const events = await fetchEvents(token.access_token, queryString);
 
   res.json(events?.data?.results);
 });
